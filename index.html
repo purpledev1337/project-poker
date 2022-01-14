@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Classic Poker</title>
+</head>
+<body>
+
+    <div id="root">
+
+        <button :disabled="userCards.length === 5 && comCards.length === 5" @click="giveCards">Play</button>
+        <hr>
+
+        <h1>Computer Cards</h1>
+        <button class="card" v-for="comCard, i in comCards">
+            <img :src="comCard.url" alt="">
+        </button>
+        <hr>
+
+        <h1>User Cards</h1>
+        <button @click="chooseCard" :class="chosenCards.indexOf(`${j}`) !== -1 ? 'active' : ''" :mykey="j" class="card" v-for="userCard, j in userCards">
+            <img :src="userCard.url" alt="">
+        </button>
+        <hr>
+
+        <h3>Select the cards you want to keep</h3>
+        <button :disabled="newUserCards.length === 5 || userCards.length === 0" @click="changeCards">Change cards</button>
+
+        <h2 v-show="newUserCards.length != 0">new User Cards</h2>
+        <button v-for="newCard, i in newUserCards" :key="i">
+            <img :src="newCard.url" alt="">
+        </button>
+        <hr>
+        
+        <button :disabled="newUserCards.length === 0" @click="calcResult">Final Result</button>
+        <h1 v-show="finalResult !== ''">{{ finalResult }}</h1>
+        <br>
+
+        <h2 style="display: inline-block;" v-show="cardsOfSameValue.length != 0">Cards of same value: </h2>
+        <span v-for="card, i in cardsOfSameValue">
+            <img :src="card.url" alt="">
+        </span>
+
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="main.js"></script>
+    
+</body>
+</html>
