@@ -276,7 +276,6 @@ var poker = new Vue({
                 url: 'https://www.improvemagic.com/wp-content/uploads/2020/11/pk.png?ezimgfmt=ng:webp/ngcb13'
             }
         ]
-
     },
     methods: {
         giveCards: function() {
@@ -330,19 +329,57 @@ var poker = new Vue({
                 this.newUserCards.push(this.deck[randomNumber]);
                 this.deck.splice(randomNumber, 1);
             }
-
+            // this.newUserCards = [{
+            //     value: 12,
+            //     suit: 'h',
+            //     url: 'https://www.improvemagic.com/wp-content/uploads/2020/11/sa.png?ezimgfmt=ng:webp/ngcb13'
+            // },
+            // {
+            //     value: 13,
+            //     suit: 'h',
+            //     url: 'https://www.improvemagic.com/wp-content/uploads/2020/11/s2.png?ezimgfmt=ng:webp/ngcb13'
+            // },
+            // {
+            //     value: 11,
+            //     suit: 'h',
+            //     url: 'https://www.improvemagic.com/wp-content/uploads/2020/11/s3.png?ezimgfmt=ng:webp/ngcb13'
+            // },
+            // {
+            //     value: 10,
+            //     suit: 'h',
+            //     url: 'https://www.improvemagic.com/wp-content/uploads/2020/11/s4.png?ezimgfmt=ng:webp/ngcb13'
+            // },
+            // {
+            //     value: 9,
+            //     suit: 'h',
+            //     url: 'https://www.improvemagic.com/wp-content/uploads/2020/11/s5.png?ezimgfmt=ng:webp/ngcb13'
+            // }]
         },
         calcResult: function() {
-            
+
             this.calcHighCard(this.newUserCards);
 
-            console.log("carta alta", this.highCard);
+            this.calcCouples(this.newUserCards);
 
-            this.calcCouples(this.newUserCards)
+            this.calcStraight();
 
-            console.log("finalResult: ", this.finalResult);
+            this.checkForFlush();
 
-            console.log("composing straight", this.composingStraight);
+
+
+            if (this.cardsOfSameValue.length === 0) {
+
+                if (this.checkForFlush()  & this.calcStraight() ) {
+
+                    this.finalResult = "Unbelievable! a STRAIGHT FLUSH! High Card: " + this.highCard;
+                } if (this.checkForFlush() & !this.calcStraight()) {
+
+                    this.finalResult = "Wow.. Flush! High Card: " + this.highCard;
+                } if (!this.checkForFlush() & this.calcStraight()) {
+
+                    this.finalResult = "OMG a Straight! High Card: " + this.highCard;
+                }
+            }
 
         },
         calcHighCard: function(hand) {
@@ -378,26 +415,14 @@ var poker = new Vue({
                     }
                 }
             }
-            
-            // if (this.calcStraight(this.newUserCards) & this.checkForFlush()) {
 
-            //     return this.finalResult = "Unbelievable! a STRAIGHT FLUSH! High Card: " + this.highCard;
-            // }
-            // if (this.calcStraight(this.newUserCards) & !this.checkForFlush()) {
-
-            //     return this.finalResult = "OMG a Straight! High Card: " + this.highCard;
-            // }
-            // if (this.checkForFlush() & !this.calcStraight(this.newUserCards)) {
-
-            //     return this.finalResult = "Wow.. Flush! High Card: " + this.highCard;
-            // }
             if (this.cardsOfSameValue.length === 5) {
                 
                 return this.finalResult = "full, high card: " + this.highCard;
             } if (this.cardsOfSameValue.length === 4 & !this.checkForPoker()) {
                 
                 return this.finalResult = "Double pair!";
-            } if (this.checkForPoker()) {
+            } if (this.cardsOfSameValue.length === 4 & this.checkForPoker()) {
 
                 return this.finalResult = "!Poker of " + this.highCard + "!";
             } if (this.cardsOfSameValue.length === 3) {
@@ -407,15 +432,18 @@ var poker = new Vue({
 
                 return this.finalResult = "A pair..";
             } else {
-
+    
                 return this.finalResult = "High card: " + this.highCard;
             }
         },
         checkForPoker: function() {
 
-            if (this.cardsOfSameValue[0] !== this.cardsOfSameValue[1]) {
-
-                return false;
+            if (this.cardsOfSameValue.length === 4) {
+    
+                if (this.cardsOfSameValue[0].value === this.cardsOfSameValue[1].value & this.cardsOfSameValue[1].value === this.cardsOfSameValue[2].value) {
+    
+                    return true;
+                }
             }
         },
         checkForFlush: function() {
@@ -430,46 +458,129 @@ var poker = new Vue({
 
             return true;
         },
-        calcStraight: function(hand) {
+        calcStraight: function() {
 
-            // **********************************************************************
-            // find 2 consecutive cards and push them (ignore the aces)
-            // compare consecutive cards with other 3 to find another and push it
-            // compare consecutive cards with other 2 to find another and push it
-            // if the are 4 consecutive cards compare the last one (including aces now)
-            // **********************************************************************
-
-            for (let i = 0; i < 5; i++) {
-
-                this.tempHand = hand.slice();
-                this.tempHand.splice(i, 1);
-
-                for (let j = 0; j < 4; j++) {
-
-
-                    if (hand[i].value === this.tempHand[j].value + 1 | hand[i].value === this.tempHand[j].value - 1) {
-
-                        if (this.composingStraight.indexOf(hand[i]) === -1) {
-
-                            this.composingStraight.push(hand[i]);
-                        } if (this.composingStraight.indexOf(hand[j]) === -1) {
-
-                            this.composingStraight.push(hand[j]);
-                        }
-                    }
-                }
-            }
+            this.calcTwoFifth(this.newUserCards);
+            this.calcThreeFifth();
+            this.calcFourFifth();
+            this.calcFiveFifth();
 
             if (this.composingStraight.length === 5) {
 
                 return true;
+            } else {
+
+                return false;
+            }
+        },
+        calcTwoFifth: function(hand) {
+
+            this.tempHand = hand.slice();
+            this.tempHand.splice(0, 1);
+            
+            focusCard = hand[0];
+
+            if (focusCard.value === 1) {
+
+                focusCard = hand[1];
+            }
+            
+            // take the first card in the hand and confronts it to each in tempHand
+            this.tempHand.forEach(card => {
+                
+                if (card.value !== 1 & focusCard.value !== 1 & this.composingStraight.length === 0){
+
+                    if (card.value === focusCard.value + 1 | card.value === focusCard.value - 1) {
+
+                        this.composingStraight.push(card);
+                        this.composingStraight.push(focusCard);
+                        this.tempHand.splice(this.tempHand.indexOf(card), 1);
+                        console.log(focusCard.value, "and", card.value);
+                        console.log("2 quinti scala", this.composingStraight);
+                        return true;
+                    }
+                }
+            });
+        },
+        calcThreeFifth: function() {
+
+            if (this.composingStraight.length === 2) {
+
+                this.tempHand.forEach(card => {
+                
+                    if (card.value !== this.composingStraight[0].value & card.value !== this.composingStraight[1].value) {
+    
+                        if (card.value !== 1 & card.value === this.composingStraight[0].value + 1 | card.value === this.composingStraight[0].value - 1 | card.value === this.composingStraight[1].value + 1 | card.value === this.composingStraight[1].value - 1) {
+    
+                                this.composingStraight.push(card);
+                                this.tempHand.splice(this.tempHand.indexOf(card), 1);
+                                console.log(card.value);
+                                console.log("3 quinti scala", card.value, this.composingStraight);
+                                return true;
+                        }
+                    }
+                });
+            }
+
+        },
+        calcFourFifth: function() {
+
+            if (this.composingStraight.length === 3) {
+
+                this.tempHand.forEach(card => {
+                    
+                    if (card.value !== this.composingStraight[0].value & card.value !== this.composingStraight[1].value & card.value !== this.composingStraight[2].value) {
+
+                        if (card.value !== 1 & card.value === this.composingStraight[0].value + 1 | card.value === this.composingStraight[0].value - 1 | card.value === this.composingStraight[1].value + 1 | card.value === this.composingStraight[1].value - 1 | card.value === this.composingStraight[2].value + 1 | card.value === this.composingStraight[2].value - 1) {
+
+                            this.composingStraight.push(card);
+                            this.tempHand.splice(this.tempHand.indexOf(card), 1);
+                            console.log(card.value);
+                            console.log("4 quinti scala", card.value, this.composingStraight);
+                            console.log(this.tempHand);
+                            return true;
+                        }
+                    }
+                });
+            }
+        },
+        calcFiveFifth: function() {
+
+            if (this.composingStraight.length === 4) {
+
+                lastCard = this.tempHand[0];
+
+                if (lastCard.value === 1) {
+
+                    this.composingStraight.forEach(card => {
+                        
+                        if (card.value === 2 | card.value === 13) {
+
+                            return true;
+                        }
+                    });
+                } else if (lastCard.value !== this.composingStraight[0].value & lastCard.value !== this.composingStraight[1].value & lastCard.value !== this.composingStraight[2].value & lastCard.value !== this.composingStraight[3].value) {
+                    
+                        if (lastCard.value === this.composingStraight[0].value + 1 | lastCard.value === this.composingStraight[0].value - 1 | lastCard.value === this.composingStraight[1].value + 1 | lastCard.value === this.composingStraight[1].value - 1 | lastCard.value === this.composingStraight[2].value + 1 | lastCard.value === this.composingStraight[2].value - 1 | lastCard.value === this.composingStraight[3].value + 1 | lastCard.value === this.composingStraight[3].value - 1) {
+
+                            this.composingStraight.push(lastCard);
+                            console.log("5 quinti scala", lastCard.value, this.composingStraight);
+                            return true;
+                        }
+                    }
             }
         }
     },
-    // created() {
+        // **********************************************************************
+        // find 2 consecutive cards and push them (ignore the aces)
+        // compare consecutive cards with other 3 to find another and push it
+        // compare consecutive cards with other 2 to find another and push it
+        // if the are 4 consecutive cards compare the last one (including aces now)
+        // **********************************************************************
+    created() {
 
-    //     this.giveCards();
-    //     this.changeCards();
-    //     this.calcResult()
-    // }
+        // this.giveCards();
+        // this.changeCards();
+        // this.calcResult()
+    }
 })

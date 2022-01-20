@@ -4,16 +4,40 @@
     box-sizing: border-box;
 }
 
+#root {
+    height: 800px;
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
 button {
     padding: 15px;
+}
+
+a {
+    width: 100%;
+    text-decoration: none;
+    transform: scale(2);
+}
+
+#play_btn {
+    transform: scale(8);
 }
 
 h3 {
     font-size: 2em;
 }
 
-img {
-    transform: scale(0.6);
+.card {
+    width: calc(100% / 5 - 8%);
+    margin: 0 4%;
+}
+
+.card img {
+    width: 100%;
 }
 
 .card.active {

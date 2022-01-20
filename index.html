@@ -11,38 +11,33 @@
 
     <div id="root">
 
-        <button :disabled="userCards.length === 5 && comCards.length === 5" @click="giveCards">Play</button>
-        <hr>
+        <button id="play_btn" v-show="userCards.length !== 5 && comCards.length !== 5" @click="giveCards">Play</button>
 
-        <h1>Computer Cards</h1>
-        <button class="card" v-for="comCard, i in comCards">
+        <!-- <h1>Computer Cards</h1>
+        <div class="card" v-for="comCard, i in comCards">
             <img :src="comCard.url" alt="">
-        </button>
-        <hr>
+        </div>
+        <hr> -->
 
-        <h1>User Cards</h1>
-        <button @click="chooseCard" :class="chosenCards.indexOf(`${j}`) !== -1 ? 'active' : ''" :mykey="j" class="card" v-for="userCard, j in userCards">
+        <h1 style="width: 100%;" v-show="userCards.length !== 0 & newUserCards.length === 0">Select the cards you want to keep</h1>
+        <h1 style="width: 100%;" v-show="userCards.length === 0 | newUserCards.length !== 0 & finalResult == ''">Good Luck!</h1>
+        <div v-if="newUserCards.length !== 5" @click="chooseCard" :class="chosenCards.indexOf(`${j}`) !== -1 ? 'active' : ''" :mykey="j" class="card" v-for="userCard, j in userCards">
             <img :src="userCard.url" alt="">
-        </button>
-        <hr>
-
-        <h3>Select the cards you want to keep</h3>
-        <button :disabled="newUserCards.length === 5 || userCards.length === 0" @click="changeCards">Change cards</button>
-
-        <h2 v-show="newUserCards.length != 0">new User Cards</h2>
-        <button v-for="newCard, i in newUserCards" :key="i">
+        </div>
+        <button v-show="newUserCards.length !== 5 & userCards.length !== 0" @click="changeCards">Change cards</button>
+        <div v-show="newUserCards.length === 5" v-for="newCard, i in newUserCards" class="card" :key="i">
             <img :src="newCard.url" alt="">
-        </button>
-        <hr>
-        
-        <button :disabled="newUserCards.length === 0" @click="calcResult">Final Result</button>
-        <h1 v-show="finalResult !== ''">{{ finalResult }}</h1>
-        <br>
+        </div>
 
-        <h2 style="display: inline-block;" v-show="cardsOfSameValue.length != 0">Cards of same value: </h2>
+        <button id="result_btn" v-show="newUserCards.length !== 0 & finalResult === ''" @click="calcResult">Final Result</button>
+        <h1 style="width: 100%;" v-show="finalResult !== ''">{{ finalResult }}</h1>
+
+        <!-- <h2 style="display: inline-block;" v-show="cardsOfSameValue.length != 0">Cards of same value: </h2> -->
         <span v-for="card, i in cardsOfSameValue">
             <img :src="card.url" alt="">
         </span>
+
+        <a href="" v-show="finalResult !== ''">Play again</a>
 
     </div>
     
