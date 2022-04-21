@@ -277,8 +277,31 @@ var poker = new Vue({
             }
         ]
     },
+    // computed: {
+    //     firstUserCard() {
+
+    //         return this.userCards[0];
+    //     },
+    //     secondUserCard() {
+
+    //         return this.userCards[1];
+    //     },
+    //     thirdUserCard() {
+
+    //         return this.userCards[2];
+    //     },
+    //     fourthUserCard() {
+
+    //         return this.userCards[3];
+    //     },
+    //     fifthUserCard() {
+
+    //         return this.userCards[4];
+    //     },
+    // },
     methods: {
         giveCards: function() {
+            var snd = new Audio("http://purpledev1337.online/poker/sounds/shuffle_cards.wav");
 
             for (let i = 0; i < 5; i++) {
             // every iteration generate 2 random numbers representing the drawn card's actual position in the deck
@@ -298,7 +321,8 @@ var poker = new Vue({
 
                 this.deck.splice(randomNumber2, 1);
             }
-
+            snd.play();
+            console.log(this.firstUserCard.value);
         },
         // every click toggle the presence of the item in the new array (chosenCards)
         chooseCard: function(card) {
@@ -306,7 +330,8 @@ var poker = new Vue({
             cardKey = card.currentTarget.getAttribute('mykey');
 
             if (this.chosenCards.indexOf(cardKey) === -1) {
-
+                var snd = new Audio("http://purpledev1337.online/poker/sounds/card-select.wav");
+                snd.play();
                 this.chosenCards.push(cardKey);
             } else {
 
@@ -315,7 +340,9 @@ var poker = new Vue({
 
         },
         changeCards: function() {
-        
+            var snd = new Audio("http://purpledev1337.online/poker/sounds/card_flip.wav");
+            snd.play();
+
             // pushing the chosen cards picking them from original array (position in hand = chosenCards key number)
             for (let i = 0; i < this.chosenCards.length; i++) {
 
@@ -329,6 +356,8 @@ var poker = new Vue({
                 this.newUserCards.push(this.deck[randomNumber]);
                 this.deck.splice(randomNumber, 1);
             }
+            
+            this.calcResult();
             // this.newUserCards = [{
             //     value: 12,
             //     suit: 'h',
@@ -397,6 +426,7 @@ var poker = new Vue({
             }
         },
         calcCouples: function(hand) {
+            // var vict = new Audio("victory-1.wav");
 
             for (let i = 0; i < 5; i++) {
 
@@ -417,16 +447,20 @@ var poker = new Vue({
             }
 
             if (this.cardsOfSameValue.length === 5) {
-                
+
+                // vict.play();
                 return this.finalResult = "full, high card: " + this.highCard;
             } if (this.cardsOfSameValue.length === 4 & !this.checkForPoker()) {
-                
+
+                // vict.play();
                 return this.finalResult = "Double pair!";
             } if (this.cardsOfSameValue.length === 4 & this.checkForPoker()) {
 
+                // vict.play();
                 return this.finalResult = "!Poker of " + this.highCard + "!";
             } if (this.cardsOfSameValue.length === 3) {
 
+                // vict.play();
                 return this.finalResult = "Nice, tris!";
             } if (this.cardsOfSameValue.length === 2) {
 
@@ -571,6 +605,32 @@ var poker = new Vue({
             }
         }
     },
+
+        //     const urlParams = new URLSearchParams(window.location.search);
+        // const lang      = urlParams.get('lang');
+        // let text        = 'Partita Finita';
+        // translate       = data[lang];
+
+
+
+
+
+        // 5:59
+        // data = {
+        //     "it": {
+        //         "gameStart": "Partita iniziata",
+        //         "gameOver": "Partita finita",
+        //         "pair": "Coppia"
+        //     },
+        //     "en": {
+        //         "gameStart": "Start game",
+        //         "gameOver": "Game over",
+        //         "pair": "A pair.."
+        //     }
+        // };
+        // 6:00
+        // <script type="text/javascript" src="translate.js"></script>
+        
         // **********************************************************************
         // find 2 consecutive cards and push them (ignore the aces)
         // compare consecutive cards with other 3 to find another and push it
@@ -578,7 +638,8 @@ var poker = new Vue({
         // if the are 4 consecutive cards compare the last one (including aces now)
         // **********************************************************************
     created() {
-
+        var snd = new Audio("http://purpledev1337.online/poker/sounds/bridging-cards.wav");
+        snd.play();
         // this.giveCards();
         // this.changeCards();
         // this.calcResult()

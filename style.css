@@ -18,9 +18,13 @@ button {
 }
 
 a {
-    width: 100%;
+    display: block;
     text-decoration: none;
     transform: scale(2);
+    color: white;
+    background-color: black;
+    border-radius: 20px;
+    padding: 5px;
 }
 
 #play_btn {
@@ -34,12 +38,39 @@ h3 {
 .card {
     width: calc(100% / 5 - 8%);
     margin: 0 4%;
+    position: relative;
+    animation: giveCard 1s ease-out;
 }
 
-.card img {
+@keyframes giveCard {
+    0% {
+        top: -80%;
+        right: 80%;
+    }
+    100% {
+        top: 0;
+        right: 0;
+    }
+}
+
+img {
     width: 100%;
+    border-radius: 5%;
 }
 
-.card.active {
-    border: 5px dotted red;
+.card.active::after {
+    font-size: 3em;
+    content: "\2B9F";
+    color: red;
+    position: absolute;
+    top: -25%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    animation: moveArrow infinite 300ms;
+}
+
+@keyframes moveArrow {
+    50% {
+        top: -20%;
+    }
 }
